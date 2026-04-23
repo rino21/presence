@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "http://192.168.88.85:3000", // ton backend Express
+  baseURL: "http://api-presence-dev.local"
 });
 
 export default api;
