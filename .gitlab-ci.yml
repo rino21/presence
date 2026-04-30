@@ -99,4 +99,4 @@ deploy_staging:
     PATH_COMPOSE: /home/victo/presence
   script:
     - scp docker-compose-prod.yml ${USER}@${HOST}:${PATH_COMPOSE}/docker-compose.yml
-    - ssh ${USER}@${HOST} "cd ${PATH_COMPOSE} && docker compose pull && docker compose up -d"
+    - ssh ${USER}@${HOST} "cd ${PATH_COMPOSE} && docker-compose pull && docker-compose up -d"
