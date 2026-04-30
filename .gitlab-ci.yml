@@ -19,9 +19,9 @@ stages:
         - presence-api/**/*
         - .gitlab-ci.yml
 
-# .deploy_rules_staging: &deploy_rules_staging
-#   rules:
-#     - if: '$CI_COMMIT_BRANCH == "develop"'
+.deploy_rules_staging: &deploy_rules_staging
+  rules:
+    - if: '$CI_COMMIT_BRANCH == "main"'
 
 ##########################################"Build"##########################################################
 
