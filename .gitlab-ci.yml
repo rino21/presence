@@ -88,6 +88,7 @@ build_api_staging:
     - mkdir -p ~/.ssh
     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 
+
 #staging
 deploy_staging:
   <<: [*deploy_all, *deploy_rules_staging]
