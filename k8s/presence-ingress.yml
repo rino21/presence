@@ -3,12 +3,10 @@ kind: Ingress
 metadata:
   name: presence-ingress
   namespace: presence
-  annotations:
-    kubernetes.io/ingress.class: traefik
-
 spec:
-  rules:
+  ingressClassName: traefik
 
+  rules:
     - host: api-presence-dev.local
       http:
         paths:
