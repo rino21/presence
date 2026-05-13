@@ -3,9 +3,11 @@ kind: PersistentVolumeClaim
 metadata:
   name: postgres-pvc
   namespace: presence
+
 spec:
   accessModes:
     - ReadWriteOnce
+
   resources:
     requests:
       storage: 3Gi
