@@ -20,6 +20,6 @@ spec:
       containers:
         - name: frontend
           image: registry.gitlab.com/victorino.hairun/presence/staging/front:dev
-
+          imagePullPolicy: Always
           ports:
             - containerPort: 80
