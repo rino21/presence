@@ -75,18 +75,18 @@ build_api_staging:
 
 ##########################################"Deployement"###########################################################
 
-# .deploy_all: &deploy_all
-#   stage: deploy
-#   image: alpine:latest
-#   services:
-#     - docker:18.09-dind
-#   before_script:
-#     - apk update
-#     - apk add --update openssh-client bash
-#     - eval $(ssh-agent -s)
-#     - bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY")'
-#     - mkdir -p ~/.ssh
-#     - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
+.deploy_all: &deploy_all
+  stage: deploy
+  image: alpine:latest
+  services:
+    - docker:18.09-dind
+  before_script:
+    - apk update
+    - apk add --update openssh-client bash
+    - eval $(ssh-agent -s)
+    - bash -c 'ssh-add <(echo "$SSH_PRIVATE_KEY")'
+    - mkdir -p ~/.ssh
+    - '[[ -f /.dockerenv ]] && echo -e "Host *\n\tStrictHostKeyChecking no\n\n" > ~/.ssh/config'
 
 
 # #staging
