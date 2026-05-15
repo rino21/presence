@@ -6,7 +6,8 @@ metadata:
 spec:
   selector:
     app: studio
-
+  type: NodePort
   ports:
     - port: 5555
       targetPort: 5555
+      nodePort: 31005
