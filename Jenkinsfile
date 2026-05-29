@@ -1,3 +1,4 @@
+```groovy
 pipeline {
 
     agent any
@@ -5,12 +6,14 @@ pipeline {
     environment {
 
         REGISTRY = "registry.gitlab.com"
+
         REGISTRY_IMAGE = "registry.gitlab.com/victorino.hairun/presence"
+
         PATH_COMPOSE = "/home/rino/project/presence"
 
-        REGISTRY_USER = credentials('registry-user') 
-        REGISTRY_PASSWORD = credentials('registry-password')
+        REGISTRY_USER = credentials('registry-user')
 
+        REGISTRY_PASSWORD = credentials('registry-password')
     }
 
     stages {
@@ -30,21 +33,23 @@ pipeline {
 
             steps {
 
-                script {
+                sh '''
+                    set -e
 
-                    sh """
-                        echo \$REGISTRY_PASSWORD | docker login ${REGISTRY} \
-                        -u \$REGISTRY_USER \
-                        --password-stdin
+                    echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
+                    -u "$REGISTRY_USER" \
+                    --password-stdin
 
-                        docker build \
-                        -t ${REGISTRY_IMAGE}/staging/front:dev \
-                        -f presence-front/Dockerfile \
-                        presence-front/
+                    docker build \
+                    -t $REGISTRY_IMAGE/staging/front:dev \
+                    -f presence-front/Dockerfile \
+                    presence-front/
 
-                        docker push ${REGISTRY_IMAGE}/staging/front:dev
-                    """
-                }
+                    docker push \
+                    $REGISTRY_IMAGE/staging/front:dev
+
+                    docker logout $REGISTRY
+                '''
             }
         }
 
@@ -63,21 +68,23 @@ pipeline {
 
             steps {
 
-                script {
+                sh '''
+                    set -e
 
-                    sh """
-                        echo \$REGISTRY_PASSWORD | docker login ${REGISTRY} \
-                        -u \$REGISTRY_USER \
-                        --password-stdin
+                    echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
+                    -u "$REGISTRY_USER" \
+                    --password-stdin
 
-                        docker build \
-                        -t ${REGISTRY_IMAGE}/staging/api:dev \
-                        -f presence-api/Dockerfile \
-                        presence-api/
+                    docker build \
+                    -t $REGISTRY_IMAGE/staging/api:dev \
+                    -f presence-api/Dockerfile \
+                    presence-api/
 
-                        docker push ${REGISTRY_IMAGE}/staging/api:dev
-                    """
-                }
+                    docker push \
+                    $REGISTRY_IMAGE/staging/api:dev
+
+                    docker logout $REGISTRY
+                '''
             }
         }
 
@@ -92,25 +99,27 @@ pipeline {
 
             steps {
 
-                sh """
+                sh '''
+                    set -e
+
                     # Creation dossier
-                    mkdir -p ${PATH_COMPOSE}
+                    mkdir -p $PATH_COMPOSE
 
                     # Copier docker compose
                     cp docker-compose-dev.yml \
-                    ${PATH_COMPOSE}/docker-compose.yml
+                    $PATH_COMPOSE/docker-compose.yml
 
                     # Aller dans dossier
-                    cd ${PATH_COMPOSE}
+                    cd $PATH_COMPOSE
 
                     # Pull nouvelles images
-                    docker compose pull
+                    docker compose -f docker-compose.yml pull
 
                     # Restart containers
-                    docker compose up -d
-                """
+                    docker compose -f docker-compose.yml up -d
+                '''
             }
         }
-
     }
 }
+```
