@@ -22,13 +22,9 @@ pipeline {
         // =========================================================
         stage('Build Front Staging') {
 
-            // when {
-            //     allOf {
-            //         branch 'main'
-
-            //         changeset "presence-front/**"
-            //     }
-            // }
+            when {
+                changeset "presence-front/**"
+            }
 
             steps {
 
@@ -58,11 +54,7 @@ pipeline {
         stage('Build API Staging') {
 
             when {
-                allOf {
-                    branch 'main'
-
-                    changeset "presence-api/**"
-                }
+                changeset "presence-api/**"
             }
 
             steps {
