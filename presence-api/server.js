@@ -19,6 +19,13 @@ app.post("/users", async (req, res) => {
 });
 
 // GET ALL USERS
+app.get("/test", async (req, res) => {
+  const users = await prisma.user.findMany({
+    include: { presences: true },
+  });
+  res.json(users);
+});
+
 app.get("/users", async (req, res) => {
   const users = await prisma.user.findMany({
     include: { presences: true },
