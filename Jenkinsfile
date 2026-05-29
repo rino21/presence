@@ -8,8 +8,8 @@ pipeline {
         REGISTRY_IMAGE = "registry.gitlab.com/victorino.hairun/presence"
         PATH_COMPOSE = "/home/rino/project/presence"
 
-        REGISTRY_USER = $REGISTRY_USER
-        REGISTRY_PASSWORD = $REGISTRY_PASSWORD
+        REGISTRY_USER = credentials('registry-user') 
+        REGISTRY_PASSWORD = credentials('registry-password')
 
     }
 
