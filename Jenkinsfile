@@ -5,11 +5,11 @@ pipeline {
     environment {
 
         REGISTRY = "registry.gitlab.com"
-        REGISTRY_IMAGE = "registry.gitlab.com/presence"
+        REGISTRY_IMAGE = "registry.gitlab.com/victorino.hairun/presence"
         PATH_COMPOSE = "/home/rino/project/presence"
 
-        REGISTRY_USER = credentials($REGISTRY_USER)
-        REGISTRY_PASSWORD = credentials($REGISTRY_PASSWORD)
+        REGISTRY_USER = $REGISTRY_USER
+        REGISTRY_PASSWORD = $REGISTRY_PASSWORD
 
     }
 
