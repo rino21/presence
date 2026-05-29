@@ -100,10 +100,7 @@ pipeline {
 
                 sh '''
                     set -e
-
-                    # Creation dossier
-                    mkdir -p $PATH_COMPOSE
-
+                    
                     # Copier docker compose
                     cp docker-compose-dev.yml \
                     $PATH_COMPOSE/docker-compose.yml
