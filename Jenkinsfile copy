@@ -1,0 +1,123 @@
+```groovy
+pipeline {
+
+    agent any
+
+    environment {
+
+        REGISTRY = "registry.gitlab.com"
+        REGISTRY_IMAGE = "registry.gitlab.com/presence"
+
+        REGISTRY_USER = credentials('registry-user')
+        REGISTRY_PASSWORD = credentials('registry-password')
+
+        SSH_KEY = credentials('ssh-private-key')
+
+        DEPLOYEMENT_USER = "ubuntu"
+        DEPLOYEMENT_IP = "192.168.1.10"
+
+        PATH_COMPOSE = "/home/ubuntu/presence"
+    }
+
+    stages {
+
+        // =========================================================
+        // BUILD FRONT
+        // =========================================================
+        stage('Build Front Staging') {
+
+            when {
+                allOf {
+                    branch 'main'
+
+                    changeset "presence-front/**"
+                }
+            }
+
+            steps {
+
+                script {
+
+                    sh """
+                        echo \$REGISTRY_PASSWORD | docker login ${REGISTRY} \
+                        -u \$REGISTRY_USER \
+                        --password-stdin
+
+                        docker build \
+                        -t ${REGISTRY_IMAGE}/staging/front:dev \
+                        -f presence-front/Dockerfile \
+                        presence-front/
+
+                        docker push ${REGISTRY_IMAGE}/staging/front:dev
+                    """
+                }
+            }
+        }
+
+        // =========================================================
+        // BUILD API
+        // =========================================================
+        stage('Build API Staging') {
+
+            when {
+                allOf {
+                    branch 'main'
+
+                    changeset "presence-api/**"
+                }
+            }
+
+            steps {
+
+                script {
+
+                    sh """
+                        echo \$REGISTRY_PASSWORD | docker login ${REGISTRY} \
+                        -u \$REGISTRY_USER \
+                        --password-stdin
+
+                        docker build \
+                        -t ${REGISTRY_IMAGE}/staging/api:dev \
+                        -f presence-api/Dockerfile \
+                        presence-api/
+
+                        docker push ${REGISTRY_IMAGE}/staging/api:dev
+                    """
+                }
+            }
+        }
+
+        // =========================================================
+        // DEPLOY
+        // =========================================================
+        stage('Deploy Staging') {
+
+            when {
+                branch 'main'
+            }
+
+            steps {
+
+                sshagent(credentials: ['ssh-private-key']) {
+
+                    sh """
+                        scp -o StrictHostKeyChecking=no k8s/* \
+                        ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${PATH_COMPOSE}/
+
+                        ssh -o StrictHostKeyChecking=no \
+                        ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} "
+
+                            cd ${PATH_COMPOSE}
+
+                            kubectl apply -f namespace.yml
+                            kubectl apply -f postgres-pv.yml
+                            kubectl apply -f postgres-pvc.yml
+                            kubectl apply -f .
+                        "
+                    """
+                }
+            }
+        }
+    }
+}
+```
