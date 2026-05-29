@@ -20,13 +20,13 @@ pipeline {
         // =========================================================
         stage('Build Front Staging') {
 
-            when {
-                allOf {
-                    branch 'main'
+            // when {
+            //     allOf {
+            //         branch 'main'
 
-                    changeset "presence-front/**"
-                }
-            }
+            //         changeset "presence-front/**"
+            //     }
+            // }
 
             steps {
 
@@ -53,13 +53,13 @@ pipeline {
         // =========================================================
         stage('Build API Staging') {
 
-            when {
-                allOf {
-                    branch 'main'
+            // when {
+            //     allOf {
+            //         branch 'main'
 
-                    changeset "presence-api/**"
-                }
-            }
+            //         changeset "presence-api/**"
+            //     }
+            // }
 
             steps {
 
@@ -86,9 +86,9 @@ pipeline {
         // =========================================================
         stage('Deploy Staging') {
 
-            when {
-                branch 'main'
-            }
+            // when {
+            //     branch 'main'
+            // }
 
             steps {
 
