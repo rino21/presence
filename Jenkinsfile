@@ -100,7 +100,11 @@ pipeline {
 
                 sh '''
                     set -e
-                    
+
+                    echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
+                    -u "$REGISTRY_USER" \
+                    --password-stdin
+
                     # Copier docker compose
                     cp docker-compose-dev.yml \
                     $PATH_COMPOSE/docker-compose.yml
@@ -113,6 +117,8 @@ pipeline {
 
                     # Restart containers
                     docker compose -f docker-compose.yml up -d
+
+                    docker logout $REGISTRY
                 '''
             }
         }
