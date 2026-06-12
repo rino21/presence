@@ -108,6 +108,6 @@ jobs:
       - name: Deploy docker compose
         run: |
           ssh ${{ secrets.DEPLOYEMENT_USER }}@${{ secrets.DEPLOYEMENT_IP }} << EOF
-            cd /home/ubuntu/presence
+            cd /home/rino/presence
             docker compose pull && docker compose up -d
           EOF
