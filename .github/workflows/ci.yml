@@ -12,10 +12,10 @@ jobs:
   ##############################
 
   build_front:
-    # if: |
-    #   contains(join(github.event.commits.*.modified, ' '), 'presence-front/') ||
-    #   contains(join(github.event.commits.*.added, ' '), 'presence-front/') ||
-    #   contains(join(github.event.commits.*.modified, ' '), '.github/workflows/deploy.yml')
+    if: |
+      contains(join(github.event.commits.*.modified, ' '), 'presence-front/') ||
+      contains(join(github.event.commits.*.added, ' '), 'presence-front/') ||
+      contains(join(github.event.commits.*.modified, ' '), '.github/workflows/deploy.yml')
 
     runs-on: ubuntu-latest
 
@@ -49,10 +49,10 @@ jobs:
 
   build_api:
 
-    # if: |
-    #   contains(join(github.event.commits.*.modified, ' '), 'presence-api/') ||
-    #   contains(join(github.event.commits.*.added, ' '), 'presence-api/') ||
-    #   contains(join(github.event.commits.*.modified, ' '), '.github/workflows/deploy.yml')
+    if: |
+      contains(join(github.event.commits.*.modified, ' '), 'presence-api/') ||
+      contains(join(github.event.commits.*.added, ' '), 'presence-api/') ||
+      contains(join(github.event.commits.*.modified, ' '), '.github/workflows/deploy.yml')
 
     runs-on: ubuntu-latest
 
