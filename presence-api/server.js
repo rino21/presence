@@ -27,12 +27,7 @@ app.get("/users", async (req, res) => {
   res.json(users);
 });
 
-app.get("/asa", async (req, res) => {
-  const users = await prisma.user.findMany({
-    include: { presences: true },
-  });
-  res.json(users);
-});
+
 // ================= PRESENCE CRUD =================
 
 // MARK PRESENCE
