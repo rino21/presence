@@ -33,7 +33,7 @@ pipeline {
 
                 sh '''
                     set -e
-
+                    export DOCKER_BUILDKIT=1
                     echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
                     -u "$REGISTRY_USER" \
                     --password-stdin
@@ -67,7 +67,7 @@ pipeline {
 
                 sh '''
                     set -e
-
+                    export DOCKER_BUILDKIT=1
                     echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
                     -u "$REGISTRY_USER" \
                     --password-stdin
