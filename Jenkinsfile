@@ -6,7 +6,7 @@ pipeline {
 
         REGISTRY = "ghcr.io" // ghcr.io/OWNER/IMAGE_NAME:TAG
 
-        REGISTRY_IMAGE = "ghcr.io/presence"
+        REGISTRY_IMAGE = "ghcr.io/rino21/presence"
 
         PATH_COMPOSE = "/home/rino/project/presence"
 
@@ -23,8 +23,10 @@ pipeline {
         stage('Build Front Staging') {
 
             when {
-                changeset "presence-front/**"
-                changeset "Jenkinsfile"
+                anyOf{
+                    changeset "presence-front/**"
+                    changeset "Jenkinsfile"
+                }
             }
 
             steps {
@@ -55,8 +57,10 @@ pipeline {
         stage('Build API Staging') {
 
             when {
-                changeset "presence-api/**"
-                changeset "Jenkinsfile"
+                anyOf {
+                    changeset "presence-api/**"
+                    changeset "Jenkinsfile"
+                }
             }
 
             steps {
