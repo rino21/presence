@@ -38,7 +38,7 @@ pipeline {
                     -u "$REGISTRY_USER" \
                     --password-stdin
 
-                    docker build \
+                    docker buildx build \
                     -t $REGISTRY_IMAGE/staging/front:dev \
                     -f presence-front/Dockerfile \
                     presence-front/
@@ -72,7 +72,7 @@ pipeline {
                     -u "$REGISTRY_USER" \
                     --password-stdin
 
-                    docker build \
+                    docker buildx build \
                     -t $REGISTRY_IMAGE/staging/api:dev \
                     -f presence-api/Dockerfile \
                     presence-api/
