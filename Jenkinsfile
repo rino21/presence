@@ -22,12 +22,12 @@ pipeline {
         // =========================================================
         stage('Build Front Staging') {
 
-            when {
-                anyOf{
-                    changeset "presence-front/**"
-                    changeset "Jenkinsfile"
-                }
-            }
+            // when {
+            //     anyOf{
+            //         changeset "presence-front/**"
+            //         changeset "Jenkinsfile"
+            //     }
+            // }
 
             steps {
 
@@ -56,12 +56,12 @@ pipeline {
         // =========================================================
         stage('Build API Staging') {
 
-            when {
-                anyOf {
-                    changeset "presence-api/**"
-                    changeset "Jenkinsfile"
-                }
-            }
+            // when {
+            //     anyOf {
+            //         changeset "presence-api/**"
+            //         changeset "Jenkinsfile"
+            //     }
+            // }
 
             steps {
 
