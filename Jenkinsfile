@@ -4,9 +4,9 @@ pipeline {
 
     environment {
 
-        REGISTRY = "registry.gitlab.com"
+        REGISTRY = "ghcr.io" // ghcr.io/OWNER/IMAGE_NAME:TAG
 
-        REGISTRY_IMAGE = "registry.gitlab.com/victorino.hairun/presence"
+        REGISTRY_IMAGE = "ghcr.io/presence"
 
         PATH_COMPOSE = "/home/rino/project/presence"
 
@@ -24,6 +24,7 @@ pipeline {
 
             when {
                 changeset "presence-front/**"
+                changeset "Jenkinsfile"
             }
 
             steps {
@@ -55,6 +56,7 @@ pipeline {
 
             when {
                 changeset "presence-api/**"
+                changeset "Jenkinsfile"
             }
 
             steps {
@@ -82,37 +84,37 @@ pipeline {
         // =========================================================
         // DEPLOY
         // =========================================================
-        stage('Deploy Staging') {
+        // stage('Deploy Staging') {
 
-            // when {
-            //     branch 'main'
-            // }
+        //     when {
+        //         branch 'main'
+        //     }
 
-            steps {
+        //     steps {
 
-                sh '''
-                    set -e
+        //         sh '''
+        //             set -e
 
-                    echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
-                    -u "$REGISTRY_USER" \
-                    --password-stdin
+        //             echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
+        //             -u "$REGISTRY_USER" \
+        //             --password-stdin
 
-                    # Copier docker compose
-                    cp docker-compose-dev.yml \
-                    $PATH_COMPOSE/docker-compose.yml
+        //             # Copier docker compose
+        //             cp docker-compose-dev.yml \
+        //             $PATH_COMPOSE/docker-compose.yml
 
-                    # Aller dans dossier
-                    cd $PATH_COMPOSE
+        //             # Aller dans dossier
+        //             cd $PATH_COMPOSE
 
-                    # Pull nouvelles images
-                    docker compose -f docker-compose.yml pull
+        //             # Pull nouvelles images
+        //             docker compose -f docker-compose.yml pull
 
-                    # Restart containers
-                    docker compose -f docker-compose.yml up -d
+        //             # Restart containers
+        //             docker compose -f docker-compose.yml up -d
 
-                    docker logout $REGISTRY
-                '''
-            }
-        }
+        //             docker logout $REGISTRY
+        //         '''
+        //     }
+        // }
     }
 }
