@@ -100,24 +100,22 @@ pipeline {
             //     branch 'main'
             // }
 
-            stage('Deploy Staging') {
-                steps {
-                    sshagent(credentials: ['ssh-private-key']) {
-                        sh """
-                            scp -o StrictHostKeyChecking=no docker-compose-dev.yml \\
-                                ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${PATH_COMPOSE}/docker-compose.yml
+            steps {
+                sshagent(credentials: ['ssh-private-key']) {
+                    sh """
+                        scp -o StrictHostKeyChecking=no docker-compose-dev.yml \\
+                            ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${PATH_COMPOSE}/docker-compose.yml
 
-                            ssh -o StrictHostKeyChecking=no \\
-                                ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} '
-                                    set -e
-                                    cd ${PATH_COMPOSE}
-                                    echo "'\$REGISTRY_PASSWORD'" | docker login "'\$REGISTRY'" -u "'\$REGISTRY_USER'" --password-stdin
-                                    docker compose -f docker-compose.yml pull
-                                    docker compose -f docker-compose.yml up -d
-                                    docker logout "'\$REGISTRY'"
-                                '
-                        """
-                    }
+                        ssh -o StrictHostKeyChecking=no \\
+                            ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} '
+                                set -e
+                                cd ${PATH_COMPOSE}
+                                echo "'\$REGISTRY_PASSWORD'" | docker login "'\$REGISTRY'" -u "'\$REGISTRY_USER'" --password-stdin
+                                docker compose -f docker-compose.yml pull
+                                docker compose -f docker-compose.yml up -d
+                                docker logout "'\$REGISTRY'"
+                            '
+                    """
                 }
             }
         }
