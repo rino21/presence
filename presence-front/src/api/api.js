@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://back.gpc.vic-tec.online/"
+  baseURL: "http://192.168.40.137:3000/"
 });
 
 export default api;
