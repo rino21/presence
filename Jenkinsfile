@@ -94,9 +94,9 @@ pipeline {
         // =========================================================
         stage('Deploy Staging') {
 
-            // when {
-            //     branch 'main'
-            // }
+            when {
+                branch "main"
+            }
 
             steps {
                 sshagent(credentials: ['ssh-private-key']) {
