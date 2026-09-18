@@ -11,8 +11,6 @@ pipeline {
         REGISTRY_USER = credentials('registry-user')
 
         REGISTRY_PASSWORD = credentials('registry-password')
-
-        SSH_KEY = credentials('ssh-private-key')
         
         DEPLOYEMENT_USER = "rino"
         
