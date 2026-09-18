@@ -28,12 +28,12 @@ pipeline {
         // =========================================================
         stage('Build Front Staging') {
 
-            // when {
-            //     anyOf{
-            //         changeset "presence-front/**"
-            //         changeset "Jenkinsfile"
-            //     }
-            // }
+            when {
+                anyOf{
+                    changeset "presence-front/**"
+                    changeset "Jenkinsfile"
+                }
+            }
 
             steps {
 
@@ -62,12 +62,12 @@ pipeline {
         // =========================================================
         stage('Build API Staging') {
 
-            // when {
-            //     anyOf {
-            //         changeset "presence-api/**"
-            //         changeset "Jenkinsfile"
-            //     }
-            // }
+            when {
+                anyOf {
+                    changeset "presence-api/**"
+                    changeset "Jenkinsfile"
+                }
+            }
 
             steps {
 
@@ -100,22 +100,24 @@ pipeline {
             //     branch 'main'
             // }
 
-            steps {
-                sshagent(credentials: ['ssh-private-key']) {
-                    sh """
-                        scp -o StrictHostKeyChecking=no docker-compose-dev.yml \\
-                            ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${COMPOSE_DIR}/docker-compose.yml
+            stage('Deploy Staging') {
+                steps {
+                    sshagent(credentials: ['ssh-private-key']) {
+                        sh """
+                            scp -o StrictHostKeyChecking=no docker-compose-dev.yml \\
+                                ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${PATH_COMPOSE}/docker-compose.yml
 
-                        ssh -o StrictHostKeyChecking=no \\
-                            ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} '
-                                set -e
-                                cd ${COMPOSE_DIR}
-                                echo "'\$REGISTRY_PASSWORD'" | docker login "'\$REGISTRY'" -u "'\$REGISTRY_USER'" --password-stdin
-                                docker compose -f docker-compose.yml pull
-                                docker compose -f docker-compose.yml up -d
-                                docker logout "'\$REGISTRY'"
-                            '
-                    """
+                            ssh -o StrictHostKeyChecking=no \\
+                                ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} '
+                                    set -e
+                                    cd ${PATH_COMPOSE}
+                                    echo "'\$REGISTRY_PASSWORD'" | docker login "'\$REGISTRY'" -u "'\$REGISTRY_USER'" --password-stdin
+                                    docker compose -f docker-compose.yml pull
+                                    docker compose -f docker-compose.yml up -d
+                                    docker logout "'\$REGISTRY'"
+                                '
+                        """
+                    }
                 }
             }
         }
