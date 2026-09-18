@@ -101,29 +101,23 @@ pipeline {
             // }
 
             steps {
-
                 sshagent(credentials: ['ssh-private-key']) {
+                    withCredentials([
+                        string(credentialsId: 'registry-pass', variable: 'REGISTRY_PASSWORD'),
+                        string(credentialsId: 'registry-user', variable: 'REGISTRY_USER')
+                    ]) {
+                        sh '''
+                            scp -o StrictHostKeyChecking=no docker-compose-dev.yml \
+                                ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${COMPOSE_DIR}/docker-compose.yml
 
-                    sh """
-                        echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
-                        -u "$REGISTRY_USER" \
-                        --password-stdin
-
-                        scp -o StrictHostKeyChecking=no docker-compose-dev.yml \
-                        ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${PATH_COMPOSE}/docker-compose.yml
-
-                        ssh -o StrictHostKeyChecking=no \
-                        ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} "
-
-                            cd ${PATH_COMPOSE}
-
-                            docker compose -f docker-compose.yml pull
-
-                            docker compose -f docker-compose.yml up -d
-
-                            docker logout $REGISTRY
-                        "
-                    """
+                            ssh -o StrictHostKeyChecking=no ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} \
+                                "echo '$REGISTRY_PASSWORD' | docker login $REGISTRY -u '$REGISTRY_USER' --password-stdin && \
+                                cd $COMPOSE_DIR && \
+                                docker compose pull && \
+                                docker compose up -d && \
+                                docker logout $REGISTRY"
+                        '''
+                    }
                 }
             }
         }
