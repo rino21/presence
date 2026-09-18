@@ -23,11 +23,13 @@ services:
 
   # ─── 🚀 BACKEND EXPRESS + PRISMA ─────────────
   backend:
-    image: registry.gitlab.com/victorino.hairun/presence/staging/api:dev
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.presence-api.rule=Host(`api-presence-dev.local`)
-      - traefik.http.services.presence-api.loadbalancer.server.port=3000
+    image: ghcr.io/rino21/presence/staging/api:dev
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.presence-api.rule=Host(`api-presence-dev.local`)
+    #   - traefik.http.services.presence-api.loadbalancer.server.port=3000
+    ports:
+      - "3000:3000"
     container_name: backend_container
     depends_on:
       postgres:
@@ -38,12 +40,14 @@ services:
       - presence
 
   studio: 
-    image: registry.gitlab.com/victorino.hairun/presence/staging/api:dev
+    image: ghcr.io/rino21presence/staging/api:dev
     command: sh -c "npx prisma studio --hostname 0.0.0.0 --port 5555"
-    labels:
-      - traefik.enable=true
-      - traefik.http.routers.presence-studio.rule=Host(`studio-presence-dev.local`)
-      - traefik.http.services.presence-studio.loadbalancer.server.port=5555
+    # labels:
+    #   - traefik.enable=true
+    #   - traefik.http.routers.presence-studio.rule=Host(`studio-presence-dev.local`)
+    #   - traefik.http.services.presence-studio.loadbalancer.server.port=5555
+    ports:
+      - "5555:5555"
     container_name: backend_studio
     depends_on:
       postgres:
@@ -54,11 +58,13 @@ services:
       - presence
   # ─── 🌐 FRONTEND REACT + NGINX ─────────────
   frontend:
-    image: registry.gitlab.com/victorino.hairun/presence/staging/front:dev
-    labels:
-        - traefik.enable=true
-        - traefik.http.routers.presence-front.rule=Host(`front-presence-dev.local`)
-        - traefik.http.services.presence-front.loadbalancer.server.port=80
+    image: ghcr.io/rino21/presence/staging/front:dev
+    # labels:
+    #     - traefik.enable=true
+    #     - traefik.http.routers.presence-front.rule=Host(`front-presence-dev.local`)
+    #     - traefik.http.services.presence-front.loadbalancer.server.port=80
+    ports:
+      - "80:80"
     container_name: frontend_container
     depends_on:
       - backend

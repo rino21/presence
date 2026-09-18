@@ -8,11 +8,17 @@ pipeline {
 
         REGISTRY_IMAGE = "ghcr.io/rino21/presence"
 
-        PATH_COMPOSE = "/home/rino/project/presence"
-
         REGISTRY_USER = credentials('registry-user')
 
         REGISTRY_PASSWORD = credentials('registry-password')
+
+        SSH_KEY = credentials('ssh-private-key')
+        
+        DEPLOYEMENT_USER = "rino"
+        
+        DEPLOYEMENT_IP = "192.168.40.137"
+
+        PATH_COMPOSE = "/home/rino/project/presence"
     }
 
     stages {
@@ -96,28 +102,29 @@ pipeline {
 
             steps {
 
-                sh '''
-                    set -e
+                sshagent(credentials: ['ssh-private-key']) {
 
-                    echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
-                    -u "$REGISTRY_USER" \
-                    --password-stdin
+                    sh """
+                        echo "$REGISTRY_PASSWORD" | docker login $REGISTRY \
+                        -u "$REGISTRY_USER" \
+                        --password-stdin
 
-                    # Copier docker compose
-                    cp docker-compose-dev.yml \
-                    $PATH_COMPOSE/docker-compose.yml
+                        scp -o StrictHostKeyChecking=no docker-compose-dev.yml \
+                        ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP}:${PATH_COMPOSE}/docker-compose.yml
 
-                    # Aller dans dossier
-                    cd $PATH_COMPOSE
+                        ssh -o StrictHostKeyChecking=no \
+                        ${DEPLOYEMENT_USER}@${DEPLOYEMENT_IP} "
 
-                    # Pull nouvelles images
-                    docker compose -f docker-compose.yml pull
+                            cd ${PATH_COMPOSE}
 
-                    # Restart containers
-                    docker compose -f docker-compose.yml up -d
+                            docker compose -f docker-compose.yml pull
 
-                    docker logout $REGISTRY
-                '''
+                            docker compose -f docker-compose.yml up -d
+
+                            docker logout $REGISTRY
+                        "
+                    """
+                }
             }
         }
     }
