@@ -95,9 +95,7 @@ pipeline {
         stage('Deploy Staging') {
 
             when {
-                anyOf {
-                    branch "main"
-                }
+                expression { env.GIT_BRANCH == 'origin/main' || env.BRANCH_NAME == 'main' }
             }
 
             steps {
