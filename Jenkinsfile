@@ -95,7 +95,9 @@ pipeline {
         stage('Deploy Staging') {
 
             when {
-                branch "main"
+                anyOf {
+                    branch "main"
+                }
             }
 
             steps {
