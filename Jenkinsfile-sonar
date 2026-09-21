@@ -1,11 +1,6 @@
 pipeline {
     agent any
 
-    tools {
-        // Nom exact de l'installation SonarQube Scanner configurée dans Jenkins
-        sonarRunner 'SonarScanner'
-    }
-
     stages {
         stage('Checkout') {
             steps {
@@ -15,12 +10,12 @@ pipeline {
 
         stage('SonarQube Analysis') {
             steps {
-                // Nom exact du serveur SonarQube configuré dans Jenkins
                 withSonarQubeEnv('SonarQube') {
                     sh '''
                         sonar-scanner \
                           -Dsonar.projectKey=presence \
-                          -Dsonar.sources=.
+                          -Dsonar.sources=. \
+                          -Dsonar.exclusions=node_modules/**,coverage/**,dist/**,build/**
                     '''
                 }
             }
