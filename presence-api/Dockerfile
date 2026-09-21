@@ -10,19 +10,29 @@ WORKDIR /app
 # 2. Copier les fichiers de dépendances
 COPY package*.json ./
 
-# 3. Installer les dépendances
+# 3. Installer les dépendances (y compris prisma CLI dans node_modules/.bin)
 RUN npm install
 
 # 4. Copier le reste du code
 COPY . .
 
-# 5. Donner la propriété du dossier /app à l'utilisateur non-root
+# 5. Générer le client Prisma AU BUILD (plus besoin de npx au runtime)
+RUN ./node_modules/.bin/prisma generate
+
+# 6. Supprimer npm, npx et corepack (inutiles au runtime, sources des CVE)
+RUN rm -rf /usr/local/lib/node_modules/npm \
+           /usr/local/lib/node_modules/corepack \
+           /usr/local/bin/npm \
+           /usr/local/bin/npx \
+           /usr/local/bin/corepack
+
+# 7. Donner la propriété du dossier /app à l'utilisateur non-root
 RUN chown -R nodejs:nodejs /app
 
-# 6. Basculer vers l'utilisateur non-root
+# 8. Basculer vers l'utilisateur non-root
 USER nodejs
 
 EXPOSE 3000
 
-# 7. Commande de démarrage
-CMD ["sh", "-c", "npx prisma generate && npx prisma migrate deploy && npx prisma db seed && node server.js"]
+# 9. Commande de démarrage (utilise directement le binaire prisma local)
+CMD ["sh", "-c", "./node_modules/.bin/prisma migrate deploy && ./node_modules/.bin/prisma db seed && node server.js"]
