@@ -19,6 +19,7 @@ pipeline {
 
         // 👇 AJOUT : Configuration Trivy
         TRIVY_SERVER = "http://192.168.40.138:4954"
+        // TRIVY_SEVERITY = "CRITICAL"
         TRIVY_SEVERITY = "CRITICAL,HIGH"
     }
 
