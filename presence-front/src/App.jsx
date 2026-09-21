@@ -26,7 +26,7 @@ function App() {
         <div className="header-content">
           <div className="logo">
             <span className="logo-icon">📋</span>
-            <h1>Gestion de Présence L.L.B</h1>
+            <h1>Gestion de Présence HaiTec</h1>
           </div>
           <div className="header-stats">
             <span className="stat-badge">v1.0</span>
