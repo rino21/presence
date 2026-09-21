@@ -1,8 +1,9 @@
 pipeline {
     agent any
+    
     tools {
-        // Référence au scanner configuré globalement (étape 5)
-        sonarQube 'SonarScanner'
+    // Utilisez le nom exact de classe du plugin SonarQube
+        sonarScanner 'SonarScanner'
     }
     stages {
         stage('Checkout') {
