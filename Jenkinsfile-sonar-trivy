@@ -237,7 +237,7 @@ pipeline {
         PATH_COMPOSE = "/home/rino/project/presence"
 
         // 👇 Configuration Trivy
-        TRIVY_SERVER = "http://192.168.40.138:4954"
+        TRIVY_SERVER   = "http://192.168.40.138:4954"
         TRIVY_SEVERITY = "CRITICAL,HIGH"
         TRIVY_TEMPLATE = "/usr/local/share/trivy/templates/html.tpl"
     }
@@ -282,10 +282,11 @@ pipeline {
                 sh '''
                     set +e
 
-                    # 1) Scan -> JSON (ne bloque pas le pipeline)
-                    trivy fs \
+                    # 1) Scan -> JSON
+                    TRIVY_TEMPLATE= trivy fs \
                       --server ${TRIVY_SERVER} \
                       --severity ${TRIVY_SEVERITY} \
+                      --scanners vuln \
                       --no-progress \
                       --skip-version-check \
                       --timeout 15m \
@@ -295,14 +296,14 @@ pipeline {
 
                     SCAN_EXIT=$?
 
-                    # 2) JSON -> HTML (toujours exécuté)
+                    # 2) JSON -> HTML
                     trivy convert \
                       --format template \
                       --template "@${TRIVY_TEMPLATE}" \
                       --output trivy-fs-results.html \
                       trivy-fs-results.json || true
 
-                    # 3) Échec du pipeline si le scan a trouvé des vulns
+                    # 3) Échec du pipeline si vulnérabilités trouvées
                     exit $SCAN_EXIT
                 '''
             }
@@ -368,9 +369,10 @@ pipeline {
                 sh '''
                     set +e
 
-                    trivy image \
+                    TRIVY_TEMPLATE= trivy image \
                       --server ${TRIVY_SERVER} \
                       --severity ${TRIVY_SEVERITY} \
+                      --scanners vuln \
                       --no-progress \
                       --skip-version-check \
                       --timeout 15m \
@@ -451,9 +453,10 @@ pipeline {
                 sh '''
                     set +e
 
-                    trivy image \
+                    TRIVY_TEMPLATE= trivy image \
                       --server ${TRIVY_SERVER} \
                       --severity ${TRIVY_SEVERITY} \
+                      --scanners vuln \
                       --no-progress \
                       --skip-version-check \
                       --timeout 15m \
