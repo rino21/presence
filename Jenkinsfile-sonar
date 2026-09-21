@@ -1,0 +1,35 @@
+pipeline {
+    agent any
+    tools {
+        // Référence au scanner configuré globalement (étape 5)
+        sonarQube 'SonarScanner'
+    }
+    stages {
+        stage('Checkout') {
+            steps {
+                checkout scm
+            }
+        }
+        stage('SonarQube Analysis') {
+            steps {
+                // Référence au serveur configuré globalement (étape 4)
+                withSonarQubeEnv('SonarQube') {
+                    // Commande d'analyse (ici pour un projet générique)
+                    sh '''
+                        sonar-scanner \
+                          -Dsonar.projectKey=presence \
+                          -Dsonar.sources=. 
+                    '''
+                }
+            }
+        }
+        stage('Quality Gate') {
+            steps {
+                // Met le pipeline en pause jusqu'au retour du Quality Gate
+                timeout(time: 1, unit: 'HOURS') {
+                    waitForQualityGate abortPipeline: true
+                }
+            }
+        }
+    }
+}
