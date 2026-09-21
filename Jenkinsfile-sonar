@@ -11,12 +11,14 @@ pipeline {
         stage('SonarQube Analysis') {
             steps {
                 withSonarQubeEnv('SonarQube') {
-                    sh '''
-                        sonar-scanner \
-                          -Dsonar.projectKey=presence \
-                          -Dsonar.sources=. \
-                          -Dsonar.exclusions=node_modules/**,coverage/**,dist/**,build/**
-                    '''
+                    def scannerHome = tool 'SonarScanner'
+
+                    sh """
+                        ${scannerHome}/bin/sonar-scanner \
+                        -Dsonar.projectKey=presence \
+                        -Dsonar.sources=. \
+                        -Dsonar.exclusions=node_modules/**,coverage/**,dist/**,build/**
+                    """
                 }
             }
         }
