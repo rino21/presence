@@ -18,6 +18,7 @@ pipeline {
         PATH_COMPOSE = "/home/rino/project/presence"
 
         // 👇 AJOUT : Configuration Trivy
+        TRIVY_SERVER = "http://192.168.40.138:4954"
         TRIVY_SEVERITY = "CRITICAL,HIGH"
     }
 
@@ -60,6 +61,7 @@ pipeline {
             steps {
                 sh '''
                     trivy fs \
+                      --server ${TRIVY_SERVER} \
                       --severity ${TRIVY_SEVERITY} \
                       --exit-code 1 \
                       --no-progress \
@@ -116,6 +118,7 @@ pipeline {
             steps {
                 sh '''
                     trivy image \
+                      --server ${TRIVY_SERVER} \
                       --severity ${TRIVY_SEVERITY} \
                       --exit-code 1 \
                       --no-progress \
@@ -172,6 +175,7 @@ pipeline {
             steps {
                 sh '''
                     trivy image \
+                      --server ${TRIVY_SERVER} \
                       --severity ${TRIVY_SEVERITY} \
                       --exit-code 1 \
                       --no-progress \
