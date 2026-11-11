@@ -31,10 +31,10 @@ jobs:
   # Build Front
   ##############################
 
-  build_front:
+  build_front_dev:
     needs: changes
     
-    if: github.ref == 'refs/heads/develop' && (needs.changes.outputs.front-dev == 'true' || needs.changes.outputs.ci-dev == 'true')
+    if: github.ref == 'refs/heads/main' && (needs.changes.outputs.front-dev == 'true' || needs.changes.outputs.ci-dev == 'true')
     runs-on: ubuntu-latest
 
     permissions:
@@ -65,10 +65,10 @@ jobs:
   # Build API
   ##############################
 
-  build_api:
+  build_api_dev:
 
     needs: changes
-    if: github.ref == 'refs/heads/develop' && (needs.changes.outputs.api-dev == 'true' || needs.changes.outputs.ci-dev == 'true')
+    if: github.ref == 'refs/heads/main' && (needs.changes.outputs.api-dev == 'true' || needs.changes.outputs.ci-dev == 'true')
     runs-on: ubuntu-latest
 
     permissions:
