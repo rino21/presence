@@ -4,26 +4,27 @@ on:
   push:
     branches:
       - main
+      - develop
 
 jobs:
 
   changes:
     runs-on: ubuntu-latest
     outputs:
-      front: ${{ steps.filter.outputs.front }}
-      api: ${{ steps.filter.outputs.api }}
-      ci: ${{ steps.filter.outputs.ci }}
+      front-dev: ${{ steps.filter.outputs.front-dev }}
+      api-dev: ${{ steps.filter.outputs.api-dev }}
+      ci-dev: ${{ steps.filter.outputs.ci-dev }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
         id: filter
         with:
           filters: |
-            front:
+            front-dev:
               - 'presence-front/**'
-            api:
+            api-dev:
               - 'presence-api/**'
-            ci:
+            ci-dev:
               - '.github/workflows/ci.yml'
 
   ##############################
@@ -32,7 +33,8 @@ jobs:
 
   build_front:
     needs: changes
-    if: needs.changes.outputs.front == 'true' || needs.changes.outputs.ci == 'true'
+    
+    if: github.ref == 'refs/heads/develop' && (needs.changes.outputs.front-dev == 'true' || needs.changes.outputs.ci-dev == 'true')
     runs-on: ubuntu-latest
 
     permissions:
@@ -66,7 +68,7 @@ jobs:
   build_api:
 
     needs: changes
-    if: needs.changes.outputs.api == 'true' || needs.changes.outputs.ci == 'true'
+    if: github.ref == 'refs/heads/develop' && (needs.changes.outputs.api-dev == 'true' || needs.changes.outputs.ci-dev == 'true')
     runs-on: ubuntu-latest
 
     permissions:
