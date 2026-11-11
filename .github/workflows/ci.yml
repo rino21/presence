@@ -81,33 +81,33 @@ jobs:
   # Deploy
   ##############################
 
-  deploy:
+  # deploy:
 
-    needs:
-      - build_front
-      - build_api
+  #   needs:
+  #     - build_front
+  #     - build_api
 
-    runs-on: ubuntu-latest
+  #   runs-on: ubuntu-latest
 
-    steps:
+  #   steps:
 
-      - uses: actions/checkout@v4
+  #     - uses: actions/checkout@v4
 
-      - name: Configure SSH
-        run: |
-          mkdir -p ~/.ssh
-          echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
-          chmod 600 ~/.ssh/id_rsa
-          ssh-keyscan -H ${{ secrets.DEPLOYEMENT_IP }} >> ~/.ssh/known_hosts
+  #     - name: Configure SSH
+  #       run: |
+  #         mkdir -p ~/.ssh
+  #         echo "${{ secrets.SSH_PRIVATE_KEY }}" > ~/.ssh/id_rsa
+  #         chmod 600 ~/.ssh/id_rsa
+  #         ssh-keyscan -H ${{ secrets.DEPLOYEMENT_IP }} >> ~/.ssh/known_hosts
 
-      - name: Copy manifests
-        run: |
-          scp -r docker-compose-github.yml \
-          ${{ secrets.DEPLOYEMENT_USER }}@${{ secrets.DEPLOYEMENT_IP }}:/home/rino/presence/docker-compose.yml
+  #     - name: Copy manifests
+  #       run: |
+  #         scp -r docker-compose-github.yml \
+  #         ${{ secrets.DEPLOYEMENT_USER }}@${{ secrets.DEPLOYEMENT_IP }}:/home/rino/presence/docker-compose.yml
 
-      - name: Deploy docker compose
-        run: |
-          ssh ${{ secrets.DEPLOYEMENT_USER }}@${{ secrets.DEPLOYEMENT_IP }} << EOF
-            cd /home/rino/presence
-            docker compose pull && docker compose up -d
-          EOF
+  #     - name: Deploy docker compose
+  #       run: |
+  #         ssh ${{ secrets.DEPLOYEMENT_USER }}@${{ secrets.DEPLOYEMENT_IP }} << EOF
+  #           cd /home/rino/presence
+  #           docker compose pull && docker compose up -d
+  #         EOF
