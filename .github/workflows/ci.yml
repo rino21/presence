@@ -7,16 +7,31 @@ on:
 
 jobs:
 
+  changes:
+    runs-on: ubuntu-latest
+    outputs:
+      front: ${{ steps.filter.outputs.front }}
+      api: ${{ steps.filter.outputs.api }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            front:
+              - 'presence-front/**'
+            api:
+              - 'presence-api/**'
+            ci:
+              - '.github/workflows/ci.yml'
+
   ##############################
   # Build Front
   ##############################
 
   build_front:
-    if: |
-      contains(join(github.event.commits.*.modified, ' '), 'presence-front/') ||
-      contains(join(github.event.commits.*.added, ' '), 'presence-front/') ||
-      contains(join(github.event.commits.*.modified, ' '), '.github/workflows/ci.yml')
-
+    needs: changes
+    if: needs.changes.outputs.front == 'true' || needs.changes.outputs.ci == 'true'
     runs-on: ubuntu-latest
 
     permissions:
@@ -49,11 +64,8 @@ jobs:
 
   build_api:
 
-    if: |
-      contains(join(github.event.commits.*.modified, ' '), 'presence-api/') ||
-      contains(join(github.event.commits.*.added, ' '), 'presence-api/') ||
-      contains(join(github.event.commits.*.modified, ' '), '.github/workflows/ci.yml')
-
+    needs: changes
+    if: needs.changes.outputs.api == 'true' || needs.changes.outputs.ci == 'true'
     runs-on: ubuntu-latest
 
     permissions:
