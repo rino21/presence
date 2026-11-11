@@ -1,21 +1,21 @@
-# FROM node:latest AS builder
+FROM node:latest AS builder
 
-# WORKDIR /app
+WORKDIR /app
 
-# COPY package*.json ./
+COPY package*.json ./
 
-# RUN npm install
+RUN npm install
 
-# COPY . .
+COPY . .
 
-# RUN npm run build
+RUN npm run build
 
-# FROM nginx:latest
+FROM nginx:latest
 
-# RUN rm -rf /usr/share/nginx/html/*
-# COPY --from=builder /app/dist /usr/share/nginx/html/
+RUN rm -rf /usr/share/nginx/html/*
+COPY --from=builder /app/dist /usr/share/nginx/html/
 
-# EXPOSE 80
+EXPOSE 80
 
-# CMD ["nginx", "-g", "daemon off;"]
+CMD ["nginx", "-g", "daemon off;"]
 
