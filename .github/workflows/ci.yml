@@ -12,6 +12,7 @@ jobs:
     outputs:
       front: ${{ steps.filter.outputs.front }}
       api: ${{ steps.filter.outputs.api }}
+      ci: ${{ steps.filter.outputs.ci }}
     steps:
       - uses: actions/checkout@v4
       - uses: dorny/paths-filter@v3
