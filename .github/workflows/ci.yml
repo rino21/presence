@@ -104,7 +104,7 @@ jobs:
 
     if: |
       always() &&
-      github.ref == 'refs/heads/develop' &&
+      github.ref == 'refs/heads/main' &&
       !contains(needs.*.result, 'failure') &&
       !contains(needs.*.result, 'cancelled')
 
